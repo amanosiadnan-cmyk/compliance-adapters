@@ -27,6 +27,11 @@ export {
   RpcFeeEstimatorOptions,
   parseDuration,
   runScheduler,
+  WebhookNotifier,
+  type SyncNotifier,
+  type SyncNotification,
+  redactAddress,
+  redactAddresses,
 } from './sync';
 export { type SchedulerOptions } from './scheduler';
 export { SyncCheckpointStore, InMemoryCheckpointStore, FileCheckpointStore } from './checkpoint';

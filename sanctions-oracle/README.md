@@ -155,6 +155,31 @@ With `--json`, stdout contains only the final `SyncResult` as JSON and all
 progress logs go to stderr, so CI and cron wrappers can pipe it straight into
 `jq`. Exit codes are unchanged.
 
+### Sync notifications
+
+Pass a `SyncNotifier` as `SyncOptions.notifier` to be told when a sync
+completes or throws. The built-in `WebhookNotifier` POSTs a Slack-compatible
+JSON payload (`{ text, status, checked, added, failed, invalid, removed, ... }`)
+to an incoming webhook or any JSON webhook endpoint. Addresses are redacted
+(`GABC…WXYZ`) in both the message and the structured fields; full Stellar
+addresses are never sent. Notification failures are logged but never break a
+sync.
+
+```ts
+import { syncSanctionsToDenylist, WebhookNotifier } from 'sanctions-oracle';
+
+await syncSanctionsToDenylist({
+  provider,
+  addresses,
+  writer,
+  notifier: new WebhookNotifier(process.env.SANCTIONS_ORACLE_NOTIFY_WEBHOOK!),
+});
+```
+
+From the CLI, use `--notify-webhook <url>` or set
+`SANCTIONS_ORACLE_NOTIFY_WEBHOOK`. Custom destinations can implement the
+`SyncNotifier` interface (`notify(notification): void | Promise<void>`).
+
 ### Tamper-evident sync reports
 
 `signReport(report, key)` produces a `SignedReport` containing the original
