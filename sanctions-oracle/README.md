@@ -155,6 +155,29 @@ With `--json`, stdout contains only the final `SyncResult` as JSON and all
 progress logs go to stderr, so CI and cron wrappers can pipe it straight into
 `jq`. Exit codes are unchanged.
 
+### Tamper-evident sync reports
+
+`signReport(report, key)` produces a `SignedReport` containing the original
+report, its SHA-256 digest, the signer's `G...` public key, and a base64 Ed25519
+signature over the canonical JSON bytes (object keys are sorted recursively so
+the same report always signs to the same bytes). Configure the key with a
+Stellar `Keypair` or an `S...` secret string, e.g. from
+`SANCTIONS_ORACLE_REPORT_SIGNING_KEY`. `verifyReportSignature(signed, expectedPublicKey?)`
+checks the digest and signature and returns `false` for tampered or malformed
+input.
+
+```ts
+import { Keypair } from '@stellar/stellar-sdk';
+import { signReport, verifyReportSignature } from 'sanctions-oracle';
+
+const key = Keypair.fromSecret(process.env.SANCTIONS_ORACLE_REPORT_SIGNING_KEY!);
+const signed = signReport(result, key);
+if (!verifyReportSignature(signed, key.publicKey())) {
+  throw new Error('Sync report signature is invalid');
+}
+// Store or publish JSON.stringify(signed) as the tamper-evident record.
+```
+
 ### Example: Chainalysis provider
 
 [`examples/providers/chainalysis.ts`](../examples/providers/chainalysis.ts)

@@ -66,6 +66,12 @@ export {
   type TracingOptions,
   extractTraceContext,
 } from './tracing';
+export {
+  signReport,
+  verifyReportSignature,
+  canonicalJson,
+  type SignedReport,
+} from './reportSigning';
 export { RateLimitedSanctionsProvider, RateLimitOptions } from './rateLimitedProvider';
 export { RestSanctionsProvider } from './restProvider';
 export type { RestSanctionsProviderOptions } from './restProvider';
