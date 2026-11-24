@@ -25,7 +25,10 @@ export {
   ReviewAddress,
   FeeEstimate,
   RpcFeeEstimatorOptions,
+  parseDuration,
+  runScheduler,
 } from './sync';
+export { type SchedulerOptions } from './scheduler';
 export { SyncCheckpointStore, InMemoryCheckpointStore, FileCheckpointStore } from './checkpoint';
 export { createJsonlAuditLogger, JsonlAuditLoggerOptions } from './auditLog';
 export { withRetry, RetryOptions } from './retry';

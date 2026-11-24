@@ -706,8 +706,17 @@ number of pending writes and reported both in the log output and as
 
 ### Scheduled syncs
 
+Run the CLI with `--every <duration>` for a built-in scheduler, e.g.
+`--every 15m --jitter 1m`. Each tick adds a random delay of up to the jitter
+amount to avoid synchronized thundering herds, and an exclusive lock file
+(prevent overlapping runs); a tick that finds the lock held is skipped. The
+default lock lives in the OS temp directory per user; set `--lock-file <path>`
+or `SANCTIONS_ORACLE_SCHEDULER_LOCK` to share it across replicas. Programmatic
+callers can use `runScheduler({ everyMs, jitterMs, run })`.
+
 See [`docs/deploy/`](../docs/deploy/README.md) for a Kubernetes CronJob and a
-systemd service + timer.
+systemd service + timer; the Helm chart in [`charts/sanctions-oracle`](../charts/sanctions-oracle)
+uses the CronJob approach.
 
 ## Troubleshooting
 
